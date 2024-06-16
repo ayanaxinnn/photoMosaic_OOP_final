@@ -115,7 +115,7 @@ void BitFieldFilter::ApplySharpeningFilter(GrayImage &src, GrayImage &dst) {
     
     dst.Initial(cols,rows);
 
-    int filter[3][3] = {{1, 1, 1}, {1, -8, 1}, {1, 1, 1}}; //定義銳化濾波器與大小
+    int filter[3][3] = {{1, 1, 1}, {1, -6, 1}, {1, 1, 1}}; //定義銳化濾波器與大小
     int padsize = 1;
     for (int i = padsize; i < rows + padsize; i++) {
         for (int j = padsize; j < cols + padsize; j++) {
@@ -262,3 +262,29 @@ void BitFieldFilter::ApplyReflectionFilter(GrayImage &src, GrayImage &dst, char 
     }
   
 }
+
+void BitFieldFilter::ApplyRemoveBlueLightFilter(RGBImage &src, RGBImage &dst)
+{
+    int h,w;
+    h = src.get_height();
+    w = src.get_width();
+    dst.initial(w,h);
+    
+    for(int i=0;i<h;i++)
+    {
+      for(int j=0;j<w;j++)
+      {
+        for(int z=0;z<3;z++)
+        {
+          if(z<2)
+          {
+            dst.set_pixel(i, j, z, src.get_pixel(i, j, z));
+          }else
+          {
+            dst.set_pixel(i, j, z,0);
+          }
+        }
+      }
+    }
+}
+
