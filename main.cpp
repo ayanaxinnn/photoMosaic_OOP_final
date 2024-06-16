@@ -9,6 +9,8 @@
 #include "data_loader.h"
 #define ENABLE_X_SERVER true
 
+bool Custom = false;
+
 void line() {
     for (int i = 0; i < 115; i++) std::cout << "-";
     std::cout << std::endl;
@@ -30,6 +32,43 @@ char choose() {
     char ch;
     std::cin >> ch;
     return ch;
+}
+
+string select(int num)
+{
+  if(num == 1)
+  {
+    return "Image-Folder/lena.jpg";
+  }else if(num == 2)
+  {
+    return "Image-Folder/girl_2x.png";
+  }else if(num == 3)
+  {
+    return "Image-Folder/ania.jpg";
+  }else if(num == 4)
+  {
+    return "Image-Folder/4k_owl.jpg";
+  }else if(num == 5)
+  {
+    return "Image-Folder/4k_cat.jpg";
+  }else if(num == 6)
+  {
+    return "Image-Folder/elephant.jpg";
+  }else if(num == 7)
+  {
+    return "Image-Folder/wine.jpg";
+  }else if(num == 8)
+  {
+    return "Image-Folder/torii.jpg";
+  }
+  
+  return "";
+}
+
+void Interface()
+{
+  cout << "The photo: 1.Lena ; 2.Girl ; 3.Ania ; 4. Owl ; 5.Cat ; 6.Elephant ; 7.Wine ; 8.Torii" << endl;
+  cout << "Please enter the code name of photo which you want: ";
 }
 
 void zeroPadArray(const std::vector<std::vector<int>>& original, std::vector<std::vector<int>>& padded, int filsize) {
@@ -71,9 +110,18 @@ int main(int argc, char *argv[]) {
 
     line();
     
+    char Mode;
+    cout << "Do you want custom mode ? Y/N : ";
+    cin >> Mode;
+    if(Mode == 'Y')
+    {
+      Custom = true;
+    }
+    line();
+    line();
     std::cout << "Hello ^^" << std::endl;
-    std::cout << "bit_field......for gray image!!!" << std::endl;
-    std::cout<<"we default ania.jpg  to use\n";
+    std::cout << "Now, it's time to check bit_field......for image!!!" << std::endl;
+    line();
     bool startBitField = true;
     while (startBitField) {
     /*
@@ -86,15 +134,37 @@ int main(int argc, char *argv[]) {
             continue;
         }
         */
+        
         line();
+        std::string path;
+        if(Custom)
+        {
+          int code;
+          Interface();
+          while(cin >> code)
+          {
+            if(code < 0 || code > 8)
+            {
+              cout << "Invalid code! please re-enter the code again: ";
+              continue;
+            }else
+            {
+              path = select(code);
+              break;
+            }
+          }
+        }else
+        {
+          cout << "The default photo is Ania!!!" << endl;
+          path = "Image-Folder/ania.jpg";
+          line();
+        }
         
         GrayImage img3;
-        std::string path = "Image-Folder/ania.jpg";
         img3.LoadImage(path);
         
         RGBImage img5;
-        std::string pathRGB = "Image-Folder/4k_owl.jpg";
-        img5.LoadImage(pathRGB);
+        img5.LoadImage(path);
         
         GrayImage output_images[4];
         
@@ -214,9 +284,11 @@ int main(int argc, char *argv[]) {
             case '7': {
                 std::cout << "you choose the CHANGE BRIGHTNESS!!!!!!!\n";
                 double c;
+                line();
                 std::cout << "For the function f(x) = c*ln(1 + x), give a constant 'c' determined by you." << std::endl;
                 std::cout << "brighten: c > 26, darken: c < 26" << std::endl;
                 std::cout << "Suggested value is c = 10, 20, 45.985, or you can try other values by yourself." << std::endl;
+                line();
                 std::cout << "Type in c: ";
                 std::cin >> c;
                 bit.ApplyChangeBrightness(img3,output_images[0], c);
@@ -258,7 +330,7 @@ int main(int argc, char *argv[]) {
             
             case 'a': {
                 std::cout << "you choose the REMOVING BLUE LIGHT FILTER!!!!!!!\n";
-                bit.ApplyReflectionFilter(img5, output_RGBimage);
+                bit.ApplyRemoveBlueLightFilter(img5, output_RGBimage);
                 std::cout << "Removing blue light filter has been applied to your image, please check it ^_^" << std::endl;
                 if(ENABLE_X_SERVER){
                       output_RGBimage.Display_X_Server(); 
@@ -288,18 +360,44 @@ int main(int argc, char *argv[]) {
         
         
     std::cout << "Now...it's time to check photo mosaic!!!!\n";
-    std::cout << "We default the path to cat\n";
-
-    std::string path3 = "Image-Folder/girl_2x.png";
+    std::string path3;
+    cout << "The default photo is Girl!!!" << endl;
+    path3 = "Image-Folder/girl_2x.png";
+    /*
+    if(Custom)
+    {
+      Interface();
+      int co;
+      while(cin >> co)
+      {
+        if(co < 0 || co > 8)
+        {
+          cout << "Invalid code! please re-enter the code again: ";
+          continue;
+        }else
+        {
+          path3 = select(co);
+          break;
+        }
+      }
+    }else
+    {
+          cout << "The default photo is Girl!!!" << endl;
+          path3 = "Image-Folder/girl_2x.png";
+    }
+    */
     PhotoMosaic photo(path3);
     
     std::string path2;
-    for (int j = 1; j <100; j++) {
+    for (int j = 1; j <200; j++) {
         if (j < 10) {
             path2 = "Image-Folder/cifar10/cat_000" + std::to_string(j) + ".png";
             photo.InputsmallImage(path2);
         }else if (j < 100) {
             path2 = "Image-Folder/cifar10/cat_00" + std::to_string(j) + ".png";
+            photo.InputsmallImage(path2);
+        }else if (j < 300) {
+            path2 = "Image-Folder/cifar10/cat_0" + std::to_string(j) + ".png";
             photo.InputsmallImage(path2);
         }
     }
@@ -311,7 +409,10 @@ int main(int argc, char *argv[]) {
         img4.Display_X_Server();
     }
     img4.Display_CMD();
-
+    line();
+    cout<<"DEMO finished!!!"<<endl;
+    cout<<"Have a good day\n";
+    line();
     return 0;
 
 }
