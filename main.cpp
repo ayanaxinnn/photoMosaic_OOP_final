@@ -65,9 +65,43 @@ string select(int num)
   return "";
 }
 
+string select2(int num)
+{
+  if(num == 1)
+  {
+    return "Image-Folder/girl_2x.png";
+  }else if(num == 2)
+  {
+    return "Image-Folder/ania.jpg";
+  }else if(num == 3)
+  {
+    return "Image-Folder/4k_owl.jpg";
+  }else if(num == 4)
+  {
+    return "Image-Folder/4k_cat.jpg";
+  }else if(num == 5)
+  {
+    return "Image-Folder/elephant.jpg";
+  }else if(num == 6)
+  {
+    return "Image-Folder/wine.jpg";
+  }else if(num == 7)
+  {
+    return "Image-Folder/torii.jpg";
+  }
+  
+  return "";
+}
+
 void Interface()
 {
   cout << "The photo: 1.Lena ; 2.Girl ; 3.Ania ; 4. Owl ; 5.Cat ; 6.Elephant ; 7.Wine ; 8.Torii" << endl;
+  cout << "Please enter the code name of photo which you want: ";
+}
+
+void Interface2()
+{
+  cout << "The photo: 1.Girl ; 2.Ania ; 3. Owl ; 4.Cat ; 5.Elephant ; 6.Wine ; 7.Torii" << endl;
   cout << "Please enter the code name of photo which you want: ";
 }
 
@@ -318,6 +352,18 @@ int main(int argc, char *argv[]) {
                 char command;
                 std::cout << "Please enter V or H to choose vertical/horiontial reflection: ";
                 cin >> command;
+                while(command != 'H' || command != 'h' || command != 'V' || command != 'v')
+                {
+                  cout << "Invalid command! please re-enter valid command: ";
+                  cin >> command;
+                  if(command == 'H' || command == 'h' || command == 'V' || command == 'v')
+                  {
+                    break;
+                  }else
+                  {
+                    continue;
+                  }
+                }
                 bit.ApplyReflectionFilter(img3, output_images[0],command);
                 std::cout << "Reflection filter has been applied to your image, please check it ^_^" << std::endl;
                 if(ENABLE_X_SERVER){
@@ -363,20 +409,20 @@ int main(int argc, char *argv[]) {
     std::string path3;
     cout << "The default photo is Girl!!!" << endl;
     path3 = "Image-Folder/girl_2x.png";
-    /*
+    
     if(Custom)
     {
-      Interface();
+      Interface2();
       int co;
       while(cin >> co)
       {
-        if(co < 0 || co > 8)
+        if(co < 0 || co > 7)
         {
           cout << "Invalid code! please re-enter the code again: ";
           continue;
         }else
         {
-          path3 = select(co);
+          path3 = select2(co);
           break;
         }
       }
@@ -385,7 +431,7 @@ int main(int argc, char *argv[]) {
           cout << "The default photo is Girl!!!" << endl;
           path3 = "Image-Folder/girl_2x.png";
     }
-    */
+    
     PhotoMosaic photo(path3);
     
     std::string path2;
